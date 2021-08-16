@@ -5,6 +5,7 @@ from wtforms import SelectField, SubmitField
 from werkzeug.utils import secure_filename
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
+# create file ignored_file.py with SECRET_KEY
 from ignored_file import SECRET_KEY
 import speech_recognition as sr
 import os
