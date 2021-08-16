@@ -26,7 +26,7 @@ class UploadForm(FlaskForm):
 
 def get_large_audio(path, language):
     sound = AudioSegment.from_wav(path)
-    chunks = split_on_silence(sound, min_silence_len=500, silence_thresh=sound.dBFS - 14, keep_silence=500)
+    chunks = split_on_silence(sound, min_silence_len=500, silence_thresh=-16)
     folder_name = 'audio-chunks'
     if not os.path.isdir(folder_name):
         os.mkdir(folder_name)
@@ -69,6 +69,7 @@ def home():
         name_file = filename.split('.')[0]
         if extension == 'mp3':
             sound = AudioSegment.from_mp3(filename)
+            filename = f'{name_file}.wav'
             sound.export(f'{name_file}.wav', format='wav')
         text_to_file = get_large_audio(filename, language=form.language.data.split(': ')[1])
         text = open(f'txt/{name_file}.txt', 'w+', encoding='utf-8')
