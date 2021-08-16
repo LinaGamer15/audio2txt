@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AudioToTXT</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous" ></script>
+</head>
+<body style="background: #343a40;">
+<div class="container bg-white rounded shadows" style="margin-top: 10%">
+    <div class="row">
+        <div class="col-lg-10 col-md-8 mx-auto p-5 text-center">
+            <h1 class="h1">Audio to TXT</h1>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <p class="flash">{{ message }}</p>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('home') }}" method="post" class="form" role="form" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="form-group required text-left">{{ form.language.label(style='color: #A3A3A3;') }} {{ form.language(class='form-control') }}</div>
+                <div class="form-group required text-left">{{ form.file.label(style='color: #A3A3A3;') }} {{ form.file(class='form-control') }}</div>
+                {{ form.submit(class='btn btn-dark btn-large rounded-pill shadow-sm mt-3 pl-4 pr-4 button') }}
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

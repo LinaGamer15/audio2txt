@@ -1,0 +1,16 @@
+.button {
+ background: #343a40 !important;
+ border-color: #343a40 !important;
+}
+.h1 {
+ color: #343a40;
+ font-weight: 800 !important;
+ font-size: 3.5rem !important
+}
+.flash {
+ font-size: 1.5rem !important;
+ color: #A3A3A3;
+}
+.shadows {
+box-shadow: 0 .9rem 5rem rgba(80, 137, 198, 0.70)!important
+}
