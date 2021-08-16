@@ -69,7 +69,7 @@ def home():
         name_file = filename.split('.')[0]
         if extension == 'mp3':
             sound = AudioSegment.from_mp3(filename)
-            sound.export(f'{name_file}.{extension}', format='wav')
+            sound.export(f'{name_file}.wav', format='wav')
         text_to_file = get_large_audio(filename, language=form.language.data.split(': ')[1])
         text = open(f'txt/{name_file}.txt', 'w+', encoding='utf-8')
         text.write(text_to_file)
