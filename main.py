@@ -41,7 +41,7 @@ def get_large_audio(path, language, chunksize=60000):
             audio = r.record(source)
         try:
             text = r.recognize_google(audio, language=language)
-            whole_text += text
+            whole_text += f'{text} '
         except sr.UnknownValueError:
             print('The text could not be recognized')
     shutil.rmtree(os.path.abspath(folder_name))
