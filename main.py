@@ -4,13 +4,12 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 from werkzeug.utils import secure_filename
 from pydub import AudioSegment
-from pydub.silence import split_on_silence
 # create file ignored_file.py with SECRET_KEY
 from ignored_file import SECRET_KEY
 import speech_recognition as sr
 import os
 import glob
-
+import shutil
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -24,32 +23,28 @@ class UploadForm(FlaskForm):
     submit = SubmitField('Upload')
 
 
-def get_large_audio(path, language):
-    sound = AudioSegment.from_wav(path)
-    chunks = split_on_silence(sound, min_silence_len=500, silence_thresh=-16)
+def get_large_audio(path, language, chunksize=60000):
+    sound = AudioSegment.from_mp3(path)
+
+    def divide_chunks(sound, chunksize):
+        for i in range(0, len(sound), chunksize):
+            yield sound[i:i + chunksize]
+
+    chunks = list(divide_chunks(sound, chunksize))
+    whole_text = ''
     folder_name = 'audio-chunks'
     if not os.path.isdir(folder_name):
         os.mkdir(folder_name)
-    whole_text = ''
-    for i, audio_chunk in enumerate(chunks, start=1):
-        chunk_filename = os.path.join(folder_name, f'chunk{i}.wav')
-        audio_chunk.export(chunk_filename, format='wav')
-        with sr.AudioFile(chunk_filename) as source:
+    for index, chunk in enumerate(chunks):
+        chunk.export(os.path.join(folder_name, f'chunk{index}.wav'), format='wav')
+        with sr.AudioFile(os.path.join(folder_name, f'chunk{index}.wav')) as source:
             audio = r.record(source)
-            try:
-                text = r.recognize_google(audio, language, show_all=True)
-            except sr.RequestError:
-                try:
-                    with sr.AudioFile(path) as source:
-                        audio_data = r.record(source)
-                        whole_text = r.recognize_google(audio_data, language=language)
-                        break
-                except sr.UnknownValueError:
-                    print('UnknownValueError')
-            except sr.UnknownValueError:
-                print('UnknownValueError')
-            else:
-                whole_text += text
+        try:
+            text = r.recognize_google(audio, language=language)
+            whole_text += text
+        except sr.UnknownValueError:
+            print('The text could not be recognized')
+    shutil.rmtree(os.path.abspath(folder_name))
     return whole_text
 
 
