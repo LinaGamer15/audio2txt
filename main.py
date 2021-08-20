@@ -53,6 +53,12 @@ def home():
     files_txt = glob.glob('txt/*.txt')
     for file in files_txt:
         os.remove(file)
+    files_mp4 = glob.glob('*.mp3')
+    for file in files_mp4:
+        os.remove(file)
+    files_mp4 = glob.glob('*.mp4')
+    for file in files_mp4:
+        os.remove(file)
     form = UploadForm()
     if form.validate_on_submit():
         folder_txt = 'txt'
@@ -60,25 +66,13 @@ def home():
             os.mkdir(folder_txt)
         filename = secure_filename(form.file.data.filename)
         form.file.data.save(filename)
-        extension = filename.split('.')[1]
         name_file = filename.split('.')[0]
-        if extension == 'mp3':
-            sound = AudioSegment.from_mp3(filename)
-            filename = f'{name_file}.wav'
-            sound.export(f'{name_file}.wav', format='wav')
-        text_to_file = get_large_audio(filename, language=form.language.data.split(': ')[1])
+        text_to_file = get_large_audio(f'{name_file}.mp3', language=form.language.data.split(': ')[1])
         text = open(f'txt/{name_file}.txt', 'w+', encoding='utf-8')
         text.write(text_to_file)
         text.close()
-        files_wav = glob.glob('*.wav')
-        for file in files_wav:
-            os.remove(file)
-        files_mp3 = glob.glob('*.mp3')
-        for file in files_mp3:
-            os.remove(file)
         return send_file(f'txt/{name_file}.txt', mimetype='txt', attachment_filename=f'{name_file}.txt',
                          as_attachment=True)
-
     return render_template('index.html', form=form)
 
 
