@@ -53,11 +53,11 @@ def home():
     files_txt = glob.glob('txt/*.txt')
     for file in files_txt:
         os.remove(file)
-    files_mp4 = glob.glob('*.mp3')
-    for file in files_mp4:
+    files_wav = glob.glob('*.wav')
+    for file in files_wav:
         os.remove(file)
-    files_mp4 = glob.glob('*.mp4')
-    for file in files_mp4:
+    files_mp3 = glob.glob('*.mp3')
+    for file in files_mp3:
         os.remove(file)
     form = UploadForm()
     if form.validate_on_submit():
@@ -66,7 +66,10 @@ def home():
             os.mkdir(folder_txt)
         filename = secure_filename(form.file.data.filename)
         form.file.data.save(filename)
+        extension = filename.split('.')[1]
         name_file = filename.split('.')[0]
+        if extension == 'wav':
+            AudioSegment.from_wav(filename).export(f'{name_file}.mp3', format="mp3")
         text_to_file = get_large_audio(f'{name_file}.mp3', language=form.language.data.split(': ')[1])
         text = open(f'txt/{name_file}.txt', 'w+', encoding='utf-8')
         text.write(text_to_file)
